@@ -56,9 +56,12 @@ private slots:
     void on_savePushButton_clicked();
     void on_findPushButton_clicked();
 
+    void on_goBackPushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     dbManager *dbm;
+    vector<QSqlRelationalTableModel *> models;
     void createUI(QSqlRelationalTableModel* model, QTableView *table);
     QString buildRequest();
 };

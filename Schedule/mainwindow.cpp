@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->dbm = new dbManager();
     dbm->connectToDB();
     qDebug()<<dbm->getTables();
-    vector<QSqlRelationalTableModel *> models = dbm->setupModels();
+    models = dbm->setupModels();
     createUI(models.at(0), this->ui->studyGroupsTableView);
     createUI(models.at(2), this->ui->professorsTableView);
     createUI(models.at(3), this->ui->subjectsTableView);
@@ -47,9 +47,12 @@ void MainWindow::createUI(QSqlRelationalTableModel* model, QTableView *table)
 
 QString MainWindow::buildRequest()
 {
-    return  "SELECT id, name FROM professor WHERE id IN (SELECT professor FROM schedule WHERE study_group = '" + QString::number(this->ui->entityComboBox->currentIndex() + 1) + "')";
+    return "SELECT subject.id, subject.name AS Предмет, subject_type.name AS Активность, professor.name AS Преподаватель FROM schedule \
+            INNER JOIN subject on schedule.subject = subject.id \
+            INNER JOIN subject_type on schedule.subject_type = subject_type.id \
+            INNER JOIN professor on schedule.professor = professor.id \
+            WHERE study_group = '" + QString::number(this->ui->entityComboBox->currentIndex() + 1) + "'";
 }
-
 
 void MainWindow::on_addNotePushButton_clicked()
 {
@@ -77,5 +80,11 @@ void MainWindow::on_findPushButton_clicked()
     QSqlQueryModel *qm = new QSqlQueryModel();
     qm->setQuery(buildRequest());
     this->ui->scheduleTableView->setModel(qm);
+    this->ui->scheduleTableView->resizeColumnsToContents();
+}
+
+void MainWindow::on_goBackPushButton_clicked()
+{
+    this->ui->scheduleTableView->setModel(models.at(5));
     this->ui->scheduleTableView->resizeColumnsToContents();
 }

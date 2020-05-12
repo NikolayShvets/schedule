@@ -20,6 +20,7 @@ int dbManager::connectToDB()
     this->db.setDatabaseName("schedule.db");
     if(!this->db.open()){
         qDebug()<<"Connection to database failed. " + this->db.lastError().text();
+        qDebug()<<db.tables();
         return 0;
     }else{
         qDebug()<<"Connection succesful. ";
@@ -30,6 +31,7 @@ int dbManager::connectToDB()
 int dbManager::doModelRequest(const QString &request)
 {
     qm->setQuery(request);
+    return 1;
 }
 
 //метод, собирающий модели таблиц базы данных для табличного представления
